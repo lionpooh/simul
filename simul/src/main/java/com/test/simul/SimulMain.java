@@ -62,13 +62,6 @@ public class SimulMain {
     			//map.remove("plugin_instance");
     		}
     		
-    		CollectdVo collectdVo = gson.fromJson(map.toString(), CollectdVo.class);
-    		String after = gson.toJson(collectdVo);
-    		System.out.println("after: " + after);
-    		CollectdVo collectdVo2 = gson.fromJson(after, CollectdVo.class);
-    		String after2 = gson.toJson(collectdVo2);
-    		System.out.println(after2);
-    		
     	} catch(Exception e){
     		e.printStackTrace();
     	}
