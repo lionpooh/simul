@@ -2,16 +2,18 @@ package com.test.simul;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.test.simul.service.JsonToVo;
 import com.test.simul.service.SetConfig;
 import com.test.simul.vo.CollectdVo;
+import com.test.simul.vo.CollectdWinVo;
 import com.test.simul.vo.SettingsConfigVo;
 import com.test.simul.vo.SimulProperties;
 
@@ -34,37 +36,12 @@ public class SimulMain {
     	SetConfig setConfig = new SetConfig(configPath);
     	SimulProperties simulProperties = new SimulProperties();
     	SettingsConfigVo settingsConfig = null;
-    	
-    	Gson gson = new GsonBuilder().serializeNulls().create();
-    	
+
     	//property - read
     	
     	//gson - parse - vo
     	
     	//join - waiting
-    	
-    	try {
-    		String tmp;
-    		BufferedReader br = new BufferedReader(new FileReader("D:/collectdwin.txt"));
-    		
-    		/*while((tmp = br.readLine()) != null)	{
-    			//System.out.println(tmp);
-    		}*/
-    		tmp = br.readLine();
-    		Object[] obj = gson.fromJson(tmp, Object[].class);
-    		Map map = (Map) obj[0];
-    		String mapTmp = (String) map.get("plugin_instance");
-    		//mapTmp = su.center(mapTmp, 10);
-    		//System.out.println("공백 : " + mapTmp + "/");
-    		if(mapTmp.isEmpty())	{
-    			//System.out.println("null!");
-    			//map.put("plugin_instance", "\0");
-    			//map.remove("plugin_instance");
-    		}
-    		
-    	} catch(Exception e){
-    		e.printStackTrace();
-    	}
     	
     	/*double values = 97.7998781124159;
     	NumberFormat format = NumberFormat.getInstance();
@@ -72,9 +49,11 @@ public class SimulMain {
     	System.out.println(format.format(values));
     	System.out.println(values);*/
     	
-    	
     	//test
     	
+    	//Field[] fields = CollectdVo.class.getDeclaredFields();
+    	
+    	//System.out.println(fields[2].getName());
     	/*BufferedReader br = null;
     	JsonToVo parser = new JsonToVo();
     	List<String> list = new ArrayList<String>();
@@ -97,12 +76,16 @@ public class SimulMain {
 			e.printStackTrace();
 		}
     	
+    	//json to vo
+    	//error - 알맞지 않는 vo에 파싱 에러
     	if(type.equals("collectd"))	{
     		parser.sampleToCollectdVo(list);
+    		
     	} 
     	
     	else if(type.equals("collectdwin"))	{
     		parser.sampleToCollectdWinVo(list);
+    		
     	} 
     	
     	else	{
