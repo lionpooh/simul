@@ -73,20 +73,8 @@ public class SimulMain {
 	    	while((tmp = br.readLine()) != null)	{
 	    		list.add(tmp);
 	    	}
-	    	
-	    	if(type.equals("collectd"))	{
-	    		createValue.createCollectdValue(parser.sampleToCollectdVo(list));
-	    		//hostname setting - init task 할 때 새로운 객체를 생성
-	    	} 
-	    	else if(type.equals("collectdwin"))	{
-	    		createValue.createCollectdWinValue(parser.sampleToCollectdWinVo(list));
-	    		
-	    	} 
-	    	else	{
-	    		logger.error("error");
-	    	}
+	    	parser.sampleToMetricVo(list);
 	    
-	    	
     	} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

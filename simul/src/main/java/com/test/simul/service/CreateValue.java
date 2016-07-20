@@ -8,6 +8,7 @@ import java.util.List;
 import com.test.simul.vo.CollectdVo;
 import com.test.simul.vo.CollectdWinVo;
 import com.test.simul.vo.MetricValues;
+import com.test.simul.vo.MetricVo;
 import com.test.simul.vo.SimulProperties;
 
 public class CreateValue {
@@ -16,11 +17,12 @@ public class CreateValue {
 	MetricValues metricValues;
 	Field fields[];
 	Method method[];
+	int dfCount;
 	
 	public CreateValue(SimulProperties simulProperties)	{
 		this.simulProperties = simulProperties;
 		metricValues = simulProperties.getMetricValues();
-		
+		dfCount = 0;
 		//Declared가 붙을 경우 private 까지 get set 할 수가 있다. 
 		fields = metricValues.getClass().getDeclaredFields();
 		method = metricValues.getClass().getMethods();
@@ -30,7 +32,6 @@ public class CreateValue {
 	//class info 관련 exception
 	public List<List<CollectdVo>> createCollectdValue(List<CollectdVo> list) throws Exception	{
 		List<List<CollectdVo>> listOfCollectdVoList = new ArrayList<List<CollectdVo>>();
-		//simulProperties.getMetricValues();
 		
 		CollectdVo collectdVo;
 		for(int k=0; k<metricValues.getConfig_value(); k++)	{
@@ -47,11 +48,7 @@ public class CreateValue {
 				simCollectdVo.setHost(collectdVo.getHost());
 				simCollectdVo.setInterval(collectdVo.getInterval());
 				simCollectdVo.setMeta(collectdVo.getMeta());
-				
-				//비어 있는 경우도 있으니 null check
-				if(collectdVo.getPlugin_instance() != null)
-					simCollectdVo.setPlugin_instance(collectdVo.getPlugin_instance());
-				
+
 				simCollectdVo.setType(collectdVo.getType());
 				
 				//values - key point
@@ -59,6 +56,14 @@ public class CreateValue {
 				String type_instance = collectdVo.getType_instance();
 				String prefix = plugin;
 				String suffix = type_instance;
+				String plugin_instance = null;
+				
+				//비어 있는 경우도 있으니 null check
+				if(collectdVo.getPlugin_instance() != null)	{
+					//plugin_instance = collectdVo.getPlugin_instance();
+					//
+					simCollectdVo.setPlugin_instance(collectdVo.getPlugin_instance());
+				}
 				
 				simCollectdVo.setPlugin(plugin);
 				simCollectdVo.setType_instance(type_instance);
@@ -66,7 +71,6 @@ public class CreateValue {
 				Double values[] = setCustomValue(prefix, suffix, k);
 				simCollectdVo.setValues(values);
 				
-				//listOfCollectdVo.add(simCollectdVo);
 				collectdVoList.add(simCollectdVo);
 			}
 			
@@ -121,6 +125,51 @@ public class CreateValue {
 		return listOfCollectdWinVoList;
 	}
 
+	//class info 관련 exception
+	public List<List<MetricVo>> createMetricValue(List<MetricVo> list) throws Exception	{
+		List<List<MetricVo>> listOfMetricVoList = new ArrayList<List<MetricVo>>();
+		MetricVo metricVo;
+		
+		for(int k=0; k<metricValues.getConfig_value(); k++)	{
+			
+			List<MetricVo> metricVoList = new ArrayList<MetricVo>();
+			
+			for(int i=0; i<list.size(); i++)	{
+				metricVo = list.get(i);
+				
+				MetricVo simMetricVo = new MetricVo();
+				simMetricVo.setDsnames(metricVo.getDsnames());
+				simMetricVo.setDstypes(metricVo.getDstypes());
+				simMetricVo.setHost(metricVo.getHost());
+				simMetricVo.setInterval(metricVo.getInterval());
+				//time
+				simMetricVo.setMeta(metricVo.getMeta());
+
+				String plugin = metricVo.getPlugin();
+				String type_instance = metricVo.getType_instance();
+				String plugin_instance = null;
+				String prefix = plugin;
+				String suffix = type_instance;
+				
+				if(metricVo.getPlugin_instance() != null)	{
+					plugin_instance = metricVo.getPlugin_instance();
+					simMetricVo.setPlugin_instance(plugin_instance);
+				}
+				
+				simMetricVo.setPlugin(plugin);
+				simMetricVo.setType_instance(type_instance);
+				
+				Double values[] = setCustomValue(prefix, suffix, k);
+				simMetricVo.setValues(values);
+				
+				metricVoList.add(simMetricVo);
+			}
+		
+			listOfMetricVoList.add(metricVoList);
+		}
+		return listOfMetricVoList;
+	}
+	
 	//설정값에서 지정해둔 값으로 가져옴
 	public Double[] setCustomValue(String inPrefix, String inSuffix, int valueNum) throws Exception	{
 		
@@ -129,11 +178,6 @@ public class CreateValue {
 		if(inPrefix.equals("aggregation"))	{
 			inPrefix = "cpu";
 		} 
-		
-		//disk 일 경우
-		else if(inPrefix.equals("df"))	{
-			
-		}
 		
 		for(int i=0; i<method.length; i++)	{
 			String methodName = method[i].getName().toLowerCase();
@@ -151,5 +195,10 @@ public class CreateValue {
 			}
 		}
 		return values;
+	}
+	
+	//df 값을 만드는 곳
+	public void dfValueFactory()	{
+		
 	}
 }
