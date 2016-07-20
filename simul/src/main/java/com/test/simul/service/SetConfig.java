@@ -142,6 +142,7 @@ public class SetConfig {
 			int partitionValueSize = (metricValues.getConfig_value() * metricValues.getDf_partitions().size());
 			metricValues.setDf_used(
 					setPartitionSizeAsValue(inProp.getProperty("test.df.used"), partitionValueSize));
+			
 			metricValues.setDf_free(
 					setPartitionSizeAsValue(inProp.getProperty("test.df.free"), partitionValueSize));
 			

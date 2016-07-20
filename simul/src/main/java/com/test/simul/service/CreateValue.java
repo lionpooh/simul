@@ -206,7 +206,9 @@ public class CreateValue {
 	}
 	
 	//df 값을 만드는 곳
-	public void dfValueFactory()	{
+	public Double[] dfValueFactory()	{
+		Double values[] = new Double[1];
 		
+		return values;
 	}
 }
