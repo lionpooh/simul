@@ -2,7 +2,6 @@ package com.test.simul;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.test.simul.service.CreateValue;
 import com.test.simul.service.JsonToVo;
 import com.test.simul.service.SetConfig;
-import com.test.simul.vo.CollectdVo;
-import com.test.simul.vo.CollectdWinVo;
 import com.test.simul.vo.SettingsConfigVo;
 import com.test.simul.vo.SimulProperties;
 
@@ -36,7 +34,7 @@ public class SimulMain {
     	SetConfig setConfig = new SetConfig(configPath);
     	SimulProperties simulProperties = new SimulProperties();
     	SettingsConfigVo settingsConfig = null;
-
+    	
     	//property - read
     	
     	//gson - parse - vo
@@ -54,8 +52,13 @@ public class SimulMain {
     	//Field[] fields = CollectdVo.class.getDeclaredFields();
     	
     	//System.out.println(fields[2].getName());
-    	/*BufferedReader br = null;
+    	
+    	BufferedReader br = null;
+    	//JsonParsing
     	JsonToVo parser = new JsonToVo();
+    	//valueSetting
+    	CreateValue createValue = new CreateValue(simulProperties);
+    	
     	List<String> list = new ArrayList<String>();
     	String tmp = null;
     	
@@ -70,27 +73,24 @@ public class SimulMain {
 	    	while((tmp = br.readLine()) != null)	{
 	    		list.add(tmp);
 	    	}
-    	
+	    	
+	    	if(type.equals("collectd"))	{
+	    		createValue.createCollectdValue(parser.sampleToCollectdVo(list));
+	    		//hostname setting - init task 할 때 새로운 객체를 생성
+	    	} 
+	    	else if(type.equals("collectdwin"))	{
+	    		createValue.createCollectdWinValue(parser.sampleToCollectdWinVo(list));
+	    		
+	    	} 
+	    	else	{
+	    		logger.error("error");
+	    	}
+	    
+	    	
     	} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
-    	//json to vo
-    	//error - 알맞지 않는 vo에 파싱 에러
-    	if(type.equals("collectd"))	{
-    		parser.sampleToCollectdVo(list);
-    		
-    	} 
-    	
-    	else if(type.equals("collectdwin"))	{
-    		parser.sampleToCollectdWinVo(list);
-    		
-    	} 
-    	
-    	else	{
-    		logger.error("error");
-    	}*/
     		
     }
 }

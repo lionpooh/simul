@@ -9,7 +9,7 @@ public class MetricValues {
 	private List<Double> cpu_system;
 	private List<Double> cpu_idle;
 	private List<Double> memory_used;
-	private List<Double> df_partitions;
+	private List<String> df_partitions;
 	private List<Double> df_free;
 	private List<Double> df_used;
 	
@@ -55,12 +55,10 @@ public class MetricValues {
 	public void setDf_used(List<Double> df_used) {
 		this.df_used = df_used;
 	}
-	public List<Double> getDf_partitions() {
+	public List<String> getDf_partitions() {
 		return df_partitions;
 	}
-	public void setDf_partitions(List<Double> df_partitions) {
+	public void setDf_partitions(List<String> df_partitions) {
 		this.df_partitions = df_partitions;
 	}
-	
-	
 }

@@ -133,7 +133,9 @@ public class SetConfig {
 			metricValues.setCpu_user(spliterToList(inProp.getProperty("test.cpu.user"), metricValues.getConfig_value()));
 			metricValues.setCpu_idle(spliterToList(inProp.getProperty("test.cpu.idle"), metricValues.getConfig_value()));
 			metricValues.setMemory_used(spliterToList(inProp.getProperty("test.memory.used"), metricValues.getConfig_value()));
-			metricValues.setDf_partitions(spliterToList(inProp.getProperty("test.df.partitions"), metricValues.getConfig_value()));
+			
+			metricValues.setDf_partitions(splitePartitionToList(inProp.getProperty("test.df.partition"), metricValues.getConfig_value()));
+			
 			metricValues.setDf_used(spliterToList(inProp.getProperty("test.df.free"), metricValues.getConfig_value()));
 			metricValues.setDf_free(spliterToList(inProp.getProperty("test.df.used"), metricValues.getConfig_value()));
 			
@@ -170,7 +172,7 @@ public class SetConfig {
 		
 	}
 	
-	public List<Double> spliterToList(String inStr, int value)	throws Exception{
+	public List<Double> spliterToList(String inStr, int value)	throws Exception	{
 	
 		List<Double> list = new ArrayList<Double>();
 		
@@ -208,6 +210,27 @@ public class SetConfig {
 		} else {
 			
 			return null;
+		}
+		
+		return list;
+	}
+	
+	public List<String> splitePartitionToList(String inStr, int value)	throws Exception	{
+		List<String> list = new ArrayList<String>();
+		
+		if(inStr != null)	{
+			StringTokenizer st = new StringTokenizer(inStr, ",");
+			while(st.hasMoreTokens())	{
+				String temp = st.nextToken();
+				list.add(temp);
+			}
+			//value보다 사이즈가 크면 그 사이즈만큼은 자르기 -> 조금 다르게 고칠방법
+			if((list.size() > value))	{
+				int check = value;
+				while(list.size() != value)	{
+					list.remove(check);
+				}
+			}
 		}
 		
 		return list;

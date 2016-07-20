@@ -1,7 +1,6 @@
 package com.test.simul.service;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,7 @@ public class CreateValue {
 	public CreateValue(SimulProperties simulProperties)	{
 		this.simulProperties = simulProperties;
 		metricValues = simulProperties.getMetricValues();
+		
 		//Declared가 붙을 경우 private 까지 get set 할 수가 있다. 
 		fields = metricValues.getClass().getDeclaredFields();
 		method = metricValues.getClass().getMethods();
@@ -73,18 +73,19 @@ public class CreateValue {
 			listOfCollectdVoList.add(collectdVoList);
 		}
 		
-		// -> return 타입 잘못 만듬 수정
 		return listOfCollectdVoList;
 	}
 	
 	//class info 관련 exception
 	public List<List<CollectdWinVo>> createCollectdWinValue(List<CollectdWinVo> list) throws Exception	{
-		List<List<CollectdWinVo>> listOfCollectdWinVo = new ArrayList<List<CollectdWinVo>>();
+		List<List<CollectdWinVo>> listOfCollectdWinVoList = new ArrayList<List<CollectdWinVo>>();
 		CollectdWinVo collectdWinVo;
 		
 		for(int k=0; k<metricValues.getConfig_value(); k++)	{
 			
-			for(int i=0; i<metricValues.getConfig_value(); i++)	{
+			List<CollectdWinVo> collectdWinList = new ArrayList<CollectdWinVo>();
+			
+			for(int i=0; i<list.size(); i++)	{
 				collectdWinVo = list.get(i);
 				
 				CollectdWinVo simCollectdWinVo = new CollectdWinVo();
@@ -94,36 +95,48 @@ public class CreateValue {
 				simCollectdWinVo.setInterval(collectdWinVo.getInterval());
 				//time
 				simCollectdWinVo.setMeta(collectdWinVo.getMeta());
-				
-				if(collectdWinVo.getPlugin_instance() != null)	
-					simCollectdWinVo.setPlugin_instance(collectdWinVo.getPlugin_instance());
-				
+
 				String plugin = collectdWinVo.getPlugin();
 				String type_instance = collectdWinVo.getType_instance();
+				String plugin_instance = null;
 				String prefix = plugin;
 				String suffix = type_instance;
+				
+				if(collectdWinVo.getPlugin_instance() != null)	{
+					plugin_instance = collectdWinVo.getPlugin_instance();
+					simCollectdWinVo.setPlugin_instance(plugin_instance);
+				}
 				
 				simCollectdWinVo.setPlugin(plugin);
 				simCollectdWinVo.setType_instance(type_instance);
 				
-				Double values[] = setCustomValue(prefix, suffix, i);
+				Double values[] = setCustomValue(prefix, suffix, k);
 				simCollectdWinVo.setValues(values);
+				
+				collectdWinList.add(simCollectdWinVo);
 			}
+		
+			listOfCollectdWinVoList.add(collectdWinList);
 		}
-		
-		
-		return listOfCollectdWinVo;
+		return listOfCollectdWinVoList;
 	}
 
+	//설정값에서 지정해둔 값으로 가져옴
 	public Double[] setCustomValue(String inPrefix, String inSuffix, int valueNum) throws Exception	{
+		
 		Double values[] = new Double[1];
 		
 		if(inPrefix.equals("aggregation"))	{
 			inPrefix = "cpu";
+		} 
+		
+		//disk 일 경우
+		else if(inPrefix.equals("df"))	{
+			
 		}
 		
 		for(int i=0; i<method.length; i++)	{
-			String methodName = method[i].getName();
+			String methodName = method[i].getName().toLowerCase();
 			//get으로 시작하지 않으면 break
 			if(!methodName.startsWith("get"))	{
 				break;
@@ -137,7 +150,6 @@ public class CreateValue {
 				values[0] = list.get(valueNum);
 			}
 		}
-		
 		return values;
 	}
 }
