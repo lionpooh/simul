@@ -11,7 +11,7 @@ public class CollectdWinVo {
 	private Double interval;
 	private String dstypes[];
 	private String dsnames[];
-	private String values[];
+	private Double values[];
 	private Object meta;
 	
 	public String getHost() {
@@ -68,10 +68,10 @@ public class CollectdWinVo {
 	public void setDsnames(String[] dsnames) {
 		this.dsnames = dsnames;
 	}
-	public String[] getValues() {
+	public Double[] getValues() {
 		return values;
 	}
-	public void setValues(String[] values) {
+	public void setValues(Double[] values) {
 		this.values = values;
 	}
 	public Object getMeta() {

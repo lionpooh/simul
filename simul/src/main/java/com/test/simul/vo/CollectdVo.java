@@ -2,7 +2,7 @@ package com.test.simul.vo;
 
 public class CollectdVo {
 	
-	private String values[];
+	private Double values[];
 	private String dstypes[];
 	private String dsnames[];
 	private Double time;
@@ -14,10 +14,10 @@ public class CollectdVo {
 	private String type_instance;
 	private Object meta;
 	
-	public String[] getValues() {
+	public Double[] getValues() {
 		return values;
 	}
-	public void setValues(String[] values) {
+	public void setValues(Double[] values) {
 		this.values = values;
 	}
 	public String[] getDstypes() {
