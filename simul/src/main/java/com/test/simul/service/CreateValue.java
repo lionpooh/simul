@@ -18,11 +18,15 @@ public class CreateValue {
 	Field fields[];
 	Method method[];
 	int dfCount;
+	int df_freeCount;
+	int df_usedCount;
 	
 	public CreateValue(SimulProperties simulProperties)	{
 		this.simulProperties = simulProperties;
 		metricValues = simulProperties.getMetricValues();
 		dfCount = 0;
+		df_freeCount = 0;
+		df_usedCount = 0;
 		//Declared가 붙을 경우 private 까지 get set 할 수가 있다. 
 		fields = metricValues.getClass().getDeclaredFields();
 		method = metricValues.getClass().getMethods();
@@ -61,7 +65,6 @@ public class CreateValue {
 				//비어 있는 경우도 있으니 null check
 				if(collectdVo.getPlugin_instance() != null)	{
 					//plugin_instance = collectdVo.getPlugin_instance();
-					//
 					simCollectdVo.setPlugin_instance(collectdVo.getPlugin_instance());
 				}
 				
@@ -129,6 +132,7 @@ public class CreateValue {
 	public List<List<MetricVo>> createMetricValue(List<MetricVo> list) throws Exception	{
 		List<List<MetricVo>> listOfMetricVoList = new ArrayList<List<MetricVo>>();
 		MetricVo metricVo;
+		int partitionSize = metricValues.getDf_partitions().size();
 		
 		for(int k=0; k<metricValues.getConfig_value(); k++)	{
 			
@@ -150,6 +154,10 @@ public class CreateValue {
 				String plugin_instance = null;
 				String prefix = plugin;
 				String suffix = type_instance;
+				
+				if(plugin.equals("df"))	{
+					
+				}
 				
 				if(metricVo.getPlugin_instance() != null)	{
 					plugin_instance = metricVo.getPlugin_instance();
@@ -184,7 +192,7 @@ public class CreateValue {
 			//get으로 시작하지 않으면 break
 			if(!methodName.startsWith("get"))	{
 				break;
-			} 
+			}
 			
 			if(methodName.contains(inPrefix) && methodName.endsWith(inSuffix))	{
 				//exception들 많이 발생 - 처리?

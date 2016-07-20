@@ -136,8 +136,8 @@ public class SetConfig {
 			
 			metricValues.setDf_partitions(splitePartitionToList(inProp.getProperty("test.df.partition"), metricValues.getConfig_value()));
 			
-			metricValues.setDf_used(spliterToList(inProp.getProperty("test.df.free"), metricValues.getConfig_value()));
-			metricValues.setDf_free(spliterToList(inProp.getProperty("test.df.used"), metricValues.getConfig_value()));
+			//metricValues.setDf_used(spliterToList(inProp.getProperty("test.df.free"), metricValues.getConfig_value()));
+			//metricValues.setDf_free(spliterToList(inProp.getProperty("test.df.used"), metricValues.getConfig_value()));
 			
 			simProp.setMetricValues(metricValues);
 		}
@@ -195,7 +195,6 @@ public class SetConfig {
 						list.remove(check);
 					}
 				}
-				
 				else if(list.size() < value)	{
 					int check = list.size();
 					while(list.size() != value)	{
