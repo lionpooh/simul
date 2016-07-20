@@ -139,6 +139,12 @@ public class SetConfig {
 			//metricValues.setDf_used(spliterToList(inProp.getProperty("test.df.free"), metricValues.getConfig_value()));
 			//metricValues.setDf_free(spliterToList(inProp.getProperty("test.df.used"), metricValues.getConfig_value()));
 			
+			int partitionValueSize = (metricValues.getConfig_value() * metricValues.getDf_partitions().size());
+			metricValues.setDf_used(
+					setPartitionSizeAsValue(inProp.getProperty("test.df.used"), partitionValueSize));
+			metricValues.setDf_free(
+					setPartitionSizeAsValue(inProp.getProperty("test.df.free"), partitionValueSize));
+			
 			simProp.setMetricValues(metricValues);
 		}
 		
@@ -193,6 +199,7 @@ public class SetConfig {
 					int check = value;					
 					while(list.size() != value)	{		
 						list.remove(check);
+						check = check - 1;
 					}
 				}
 				else if(list.size() < value)	{
@@ -228,6 +235,37 @@ public class SetConfig {
 				int check = value;
 				while(list.size() != value)	{
 					list.remove(check);
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	//value = partitionSize * valueSize
+	public List<Double> setPartitionSizeAsValue(String inStr, int dfSize) throws Exception	{
+		List<Double> list = new ArrayList<Double>();
+		
+		if(inStr != null)	{
+			StringTokenizer st = new StringTokenizer(inStr, ",");
+			while(st.hasMoreTokens())	{
+				String temp = st.nextToken();
+				list.add(Double.parseDouble(temp));
+			}
+			//partition의 갯수와 맞지 않다면
+			if(list.size() != dfSize)	{
+				if(list.size() > dfSize)	{
+					int check = dfSize;
+					while(list.size() != dfSize)	{
+						list.remove(check);
+						check = check - 1;
+					}
+				} else if(list.size() < dfSize)	{
+					int check = dfSize;
+					while(list.size() != dfSize)	{
+						list.add(check, (double)0);
+						check = check + 1;
+					}
 				}
 			}
 		}
